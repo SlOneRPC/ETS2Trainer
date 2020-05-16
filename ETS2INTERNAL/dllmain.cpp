@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Hooking.h"
-
+#include "Features.h"
 bool g_unload = false;
 void handleMouseInput() 
 {
@@ -32,6 +32,7 @@ void MainThread(HMODULE pHandle)
                 std::this_thread::sleep_for(10ms);
                 if (GetAsyncKeyState(VK_END) & 0x8000)
                     g_unload = true;
+                Features::runLoop();
             }
         }
 
