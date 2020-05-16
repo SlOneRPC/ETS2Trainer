@@ -18,13 +18,15 @@ void Features::runLoop() {
 
 	if(g_Options.updateMoney){
 		static int* moneyAddress = (int*)Memory::FindDMAAddy(moduleBase + 0x014DD770, { 0x10, 0x10 });
-		*moneyAddress = g_Options.moneyValue;
+		if(moneyAddress)
+			*moneyAddress = g_Options.moneyValue;
 		g_Options.updateMoney = false;
 	}
 
 	if (g_Options.updateXP) {
 		static int* xpAddress = (int*)Memory::FindDMAAddy(moduleBase + 0x14DD770, { 0x1924 });
-		*xpAddress = g_Options.XPValue;
+		if(xpAddress)
+			*xpAddress = g_Options.XPValue;
 		g_Options.updateXP = false;
 	}
 }
