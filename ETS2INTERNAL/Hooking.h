@@ -20,12 +20,15 @@ public:
 	explicit Hooking(void* SwapChain[18]);
 	~Hooking();
 
+	void disable();
+
 private:
 	minhook_keepalive m_minhook_keepalive;
 	detour_hook m_swapchain_hook;
 	detour_hook m_resizeBuffers_hook;
 	detour_hook m_set_cursor_pos_hook;
 	WNDPROC m_hwndProc;
+	HWND window;
 };
 
 inline bool g_bInitialised = false;

@@ -11,13 +11,15 @@ void handleMouseInput()
         ImGui::GetIO().MouseDown[0] = false;
     }
 }
-void MainThread(HMODULE pHandle)
+
+BOOL APIENTRY MainThread(HMODULE pHandle)
 {
     g_hmodule = pHandle;
     g_cheat_thread = CreateThread(nullptr, 0, [](PVOID)->DWORD
     {
         //Attach a console
-        AllocConsole();
+        if (AttachConsole(GetCurrentProcessId()) == false)
+            AllocConsole();
         FILE* fStream;
         freopen_s(&fStream,"CONOUT$", "w", stdout);
         SetConsoleTitle(L"ETS2 Menu");
@@ -34,14 +36,18 @@ void MainThread(HMODULE pHandle)
                     g_unload = true;
                 Features::runLoop();
             }
+            g_hooking->disable();
+            hooking_instance.reset();
         }
+        writeToConsole("Closing handle and exiting...");
+        if(!FreeConsole())
+            writeToConsole("Cant close console!",true);
 
         CloseHandle(g_cheat_thread);
         FreeLibraryAndExitThread(g_hmodule, 0);
     }, nullptr, 0, &g_cheat_thread_id);
 
-    //unload needs added
-
+    return false;
 }
 
 BOOL APIENTRY DllMain( HMODULE hModule,

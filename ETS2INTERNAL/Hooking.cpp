@@ -29,15 +29,15 @@ HRESULT __fastcall Hooks::swapchain_present(IDXGISwapChain* this_, UINT sync_int
         pSwapChain = this_;
         ImGui::CreateContext();
 
-        HWND hWnd = FindWindowW(L"prism3d", nullptr);
-        if (!hWnd)
+        g_hooking->window = FindWindowW(L"prism3d", nullptr);
+        if (!g_hooking->window)
             writeToConsole("Cant find window!",true);
         else
-            g_hooking->m_hwndProc = (WNDPROC)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)Hooks::hWndProc);
+            g_hooking->m_hwndProc = (WNDPROC)SetWindowLongPtr(g_hooking->window, GWLP_WNDPROC, (LONG_PTR)Hooks::hWndProc);
 
-        ImGui_ImplWin32_Init(hWnd);
+        ImGui_ImplWin32_Init(g_hooking->window);
         ImGui_ImplDX11_Init(pDevice, pContext);
-        ImGui::GetIO().ImeWindowHandle = hWnd;
+        ImGui::GetIO().ImeWindowHandle = g_hooking->window;
         ImGui::GetIO().Fonts->AddFontDefault();
 
         g_bInitialised = true;
@@ -106,9 +106,19 @@ BOOL Hooks::set_cursor_pos(int x, int y) {
     return g_hooking->m_set_cursor_pos_hook.get_original<decltype(&Hooks::set_cursor_pos)>()(x,y);
 }
 
+void Hooking::disable() {
+    m_swapchain_hook.disable();
+    m_resizeBuffers_hook.disable();
+    m_set_cursor_pos_hook.disable();
+
+    if(g_hooking->window)
+        SetWindowLongPtrW(g_hooking->window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(m_hwndProc));
+    writeToConsole("Unhooked all!");
+}
+
 Hooking::~Hooking() 
 {
-    //TODO DESTROY HOOKS
+    g_hooking = nullptr;
     writeToConsole("Destroying hooking!");
 }
 
