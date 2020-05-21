@@ -12,6 +12,8 @@ Hooking::Hooking(void* SwapChain[18]) {
     m_swapchain_hook.enable();
     m_resizeBuffers_hook.start("ResizeBuffer", SwapChain[13], &Hooks::swapchain_resizebuffers);
     m_resizeBuffers_hook.enable();
+    m_set_cursor_pos_hook.start("SetCusorPosition", GetProcAddress(GetModuleHandleA("user32.dll"), "SetCursorPos"),&Hooks::set_cursor_pos);
+    m_set_cursor_pos_hook.enable();
     writeToConsole("Finished Hooking...");
 }
 
@@ -93,6 +95,15 @@ LRESULT CALLBACK Hooks::hWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     }
 
     return CallWindowProc(g_hooking->m_hwndProc, hwnd, uMsg, wParam, lParam);
+}
+
+BOOL Hooks::set_cursor_pos(int x, int y) {
+    
+    if (g_ShowMenu) {
+        return false;
+    }
+
+    return g_hooking->m_set_cursor_pos_hook.get_original<decltype(&Hooks::set_cursor_pos)>()(x,y);
 }
 
 Hooking::~Hooking() 

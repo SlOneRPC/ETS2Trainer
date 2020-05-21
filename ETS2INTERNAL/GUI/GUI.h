@@ -14,6 +14,9 @@ public:
 
 	bool updateMoney = false;
 	bool updateXP = false;
+
+	bool doRepair = false;
+	bool doRefuel = false;
 };
 
 
