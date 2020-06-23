@@ -6,7 +6,7 @@ void GUI::drawMenu() {
 	static bool visible = true;
 
 	ImGui::SetNextWindowSize(ImVec2{ 270,330 }, ImGuiCond_Once);
-	if (ImGui::Begin("precisionsoftware - Trainer", &visible,
+	if (ImGui::Begin("stonedtrainers", &visible,
 		ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoResize))
 	{
