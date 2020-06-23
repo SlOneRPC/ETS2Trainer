@@ -4,14 +4,14 @@
 #include "Memory.h"
 void Features::runLoop() {
 
-	static uintptr_t moduleBase = (uintptr_t)GetModuleHandle(NULL);
-	static uintptr_t trucksPartAddress = Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18, 0x78,0x18 });
+	const uintptr_t moduleBase = (uintptr_t)GetModuleHandle(NULL);
+	const uintptr_t trucksPartAddress = Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18, 0x78,0x18 });
 	
 	static float* chassisDMGAdress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x8,0x10 });
 	static float* cabinDMGAddress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x10,0x10 });
 	static float* TransmissionDMGAddress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x28,0x10 });
 	static float* EngineDMGAddress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x20,0x10 });
-	static float* WheelsDMGAddress = (float*)Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18,0x78, 0x120 });
+	static float* WheelsDMGAddress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x120 });
 	
 	static int* moneyAddress = (int*)Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x10, 0x10 });
 	static int* xpAddress = (int*)Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x192C });
