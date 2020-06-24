@@ -13,9 +13,9 @@
 #include <array>
 
 //ImGUI imports
-#include "IMGUI/imgui.h"
-#include "IMGUI/imgui_impl_win32.h"
-#include "IMGUI/imgui_impl_dx11.h"
+#include <imgui.h>
+#include <imgui_impl_win32.h>
+#include <imgui_impl_dx11.h>
 
 // DirectX Includes
 #include <d3d11.h>
