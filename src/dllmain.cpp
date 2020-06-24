@@ -28,7 +28,7 @@ BOOL APIENTRY MainThread(HMODULE pHandle)
         if (GetD3D11SwapchainDeviceContext(SwapChain, sizeof(SwapChain))) {
             //start hooking by creating a hooking instance
             auto hooking_instance = std::make_unique<Hooking>(SwapChain);
-
+            Features::setup();
             while (!g_unload) {
                 handleMouseInput();//cant handle mouse input with WndProc for some reason, this is an alternative
                 std::this_thread::sleep_for(10ms);
