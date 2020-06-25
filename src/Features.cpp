@@ -5,20 +5,21 @@
 
 uintptr_t moduleBase = (uintptr_t)GetModuleHandle(NULL);
 
-uintptr_t trucksPartAddress;
 float* chassisDMGAdress;
 float* cabinDMGAddress;
 float* TransmissionDMGAddress;
 float* EngineDMGAddress;
 float* WheelsDMGAddress;
-
+float* fuelPercent;
 void Features::setup() {
-	trucksPartAddress = Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18, 0x78,0x18 });
+	uintptr_t trucksPartAddress = Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18, 0x78,0x18 });
 	chassisDMGAdress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x8,0x10 });
 	cabinDMGAddress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x10,0x10 });
 	EngineDMGAddress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x20,0x10 });
 	TransmissionDMGAddress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x28,0x10 });
-	WheelsDMGAddress = (float*)Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18, 0x78,0x120 });
+	uintptr_t truckAddress = Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18, 0x78 });
+	WheelsDMGAddress = (float*)Memory::FindDMAAddy(truckAddress, { 0x120 });
+	fuelPercent = (float*)Memory::FindDMAAddy(truckAddress, { 0x140 });
 }
 
 
@@ -45,6 +46,12 @@ void Features::runLoop() {
 			*WheelsDMGAddress = 0;
 		}
 		g_Options.doRepair = false;
+	}
+
+	if (g_Options.autorefuel || g_Options.doRefuel) {
+		if (fuelPercent)
+			*fuelPercent = 1;//1=100%
+		g_Options.doRefuel = false;
 	}
 
 	if(g_Options.updateMoney){
