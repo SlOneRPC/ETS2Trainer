@@ -2,55 +2,33 @@
 #include "Features.h"
 #include "GUI/GUI.h"
 #include "Memory.h"
-
+#include "ETS2.h"
 uintptr_t moduleBase = (uintptr_t)GetModuleHandle(NULL);
 
-float* chassisDMGAdress;
-float* cabinDMGAddress;
-float* TransmissionDMGAddress;
-float* EngineDMGAddress;
-float* WheelsDMGAddress;
-float* fuelPercent;
+Truck* currentTruck = nullptr;
+TruckParts* currentParts = nullptr;
 void Features::setup() {
-	uintptr_t trucksPartAddress = Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18, 0x78,0x18 });
-	chassisDMGAdress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x8,0x10 });
-	cabinDMGAddress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x10,0x10 });
-	EngineDMGAddress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x20,0x10 });
-	TransmissionDMGAddress = (float*)Memory::FindDMAAddy(trucksPartAddress, { 0x28,0x10 });
-	uintptr_t truckAddress = Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18, 0x78 });
-	WheelsDMGAddress = (float*)Memory::FindDMAAddy(truckAddress, { 0x120 });
-	fuelPercent = (float*)Memory::FindDMAAddy(truckAddress, { 0x140 });
+	currentTruck = *(Truck**)Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18, 0x78 });
+	currentParts = currentTruck->partsPTR;
 }
 
 
 void Features::runLoop() {
+
+	if (!currentTruck)
+		return;
+
 	if (g_Options.autorepair || g_Options.doRepair) {
-		
-		if (chassisDMGAdress) {
-			*chassisDMGAdress = 0;
-		}
-		
-		if (cabinDMGAddress) {
-			*cabinDMGAddress = 0;
-		}
-	
-		if (TransmissionDMGAddress) {
-			*TransmissionDMGAddress = 0;
-		}
-		
-		if (EngineDMGAddress) {
-			*EngineDMGAddress = 0;
-		}
-	
-		if (WheelsDMGAddress) {
-			*WheelsDMGAddress = 0;
-		}
+		currentParts->chassisPTR->damage = 0;
+		currentParts->cabinPTR->damage = 0;
+		currentParts->enginePTR->damage = 0;
+		currentParts->transPTR->damage = 0;
+		currentTruck->wheelDmg = 0;
 		g_Options.doRepair = false;
 	}
 
 	if (g_Options.autorefuel || g_Options.doRefuel) {
-		if (fuelPercent)
-			*fuelPercent = 1;//1=100%
+		currentTruck->Fuel = 1;
 		g_Options.doRefuel = false;
 	}
 

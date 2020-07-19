@@ -101,6 +101,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ETS2.h" />
     <ClInclude Include="Features.h" />
     <ClInclude Include="GUI\GUI.h" />
     <ClInclude Include="Hooking.h" />
