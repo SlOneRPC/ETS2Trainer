@@ -3,10 +3,10 @@ class Truck
 public:
 	char pad_0000[24]; //0x0000
 	class TruckParts* partsPTR; //0x0018
-	char pad_0020[256]; //0x0020
-	float wheelDmg; //0x0120
-	char pad_0124[28]; //0x0124
-	float Fuel; //0x0140
+	char pad_0028[264]; //0x0028
+	float wheelDmg; //0x0128
+	char pad_0124[28]; //0x0132
+	float Fuel; //0x0148
 }; //Size: 0x0144
 
 class TruckParts

@@ -8,7 +8,7 @@ uintptr_t moduleBase = (uintptr_t)GetModuleHandle(NULL);
 Truck* currentTruck = nullptr;
 TruckParts* currentParts = nullptr;
 void Features::setup() {
-	currentTruck = *(Truck**)Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x18, 0x78 });
+	currentTruck = *(Truck**)Memory::FindDMAAddy(moduleBase + 0x0160ABA0, { 0x18, 0x78 });
 	currentParts = currentTruck->partsPTR;
 }
 
@@ -33,14 +33,14 @@ void Features::runLoop() {
 	}
 
 	if(g_Options.updateMoney){
-		static int* moneyAddress = (int*)Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x10, 0x10 });
+		static int* moneyAddress = (int*)Memory::FindDMAAddy(moduleBase + 0x0160ABA0, { 0x10, 0x10 });
 		if(moneyAddress)
 			*moneyAddress = g_Options.moneyValue;
 		g_Options.updateMoney = false;
 	}
 
 	if (g_Options.updateXP) {
-		static int* xpAddress = (int*)Memory::FindDMAAddy(moduleBase + 0x015171D0, { 0x192C });
+		static int* xpAddress = (int*)Memory::FindDMAAddy(moduleBase + 0x0160ABA0, { 0x1914 });
 		if(xpAddress)
 			*xpAddress = g_Options.XPValue;
 		g_Options.updateXP = false;
