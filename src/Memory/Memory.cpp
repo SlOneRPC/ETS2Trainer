@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../pch.h"
 #include "Memory.h"
 //credits guided hacking
 void Memory::Patch(BYTE* dst, BYTE* src, unsigned int size)

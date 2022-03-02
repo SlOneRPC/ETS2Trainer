@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../pch.h"
 #include "Hooking.h"
 static IDXGISwapChain* pSwapChain = NULL;
 ID3D11Device* pDevice = NULL;

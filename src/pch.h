@@ -23,12 +23,12 @@
 
 //hooking imports
 #include "MinHook.h"
-#include "Detour.h"
+#include "Hooking/Detour.h"
 
 //other
 #include "GUI/GUI.h"
 #include "Utils.h"
-#include "Render/Render.h"
+#include "GUI/Render.h"
 #include <thread>
 #include <chrono>
 

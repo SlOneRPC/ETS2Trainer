@@ -6,11 +6,10 @@ void GUI::drawMenu() {
 	static bool visible = true;
 
 	ImGui::SetNextWindowSize(ImVec2{ 270,330 }, ImGuiCond_Once);
-	if (ImGui::Begin("stonedtrainers", &visible,
+	if (ImGui::Begin("ETS2 Trainer", &visible,
 		ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoResize))
 	{
-		//ImGui::Checkbox("Enable Speedhack", &g_Options.speedhack);
 		ImGui::Checkbox("Enable Auto Repair",&g_Options.autorepair);
 		ImGui::Checkbox("Enable Auto Refuel", &g_Options.autorefuel);
 		if (ImGui::Button("Repair")) {

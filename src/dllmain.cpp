@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Hooking.h"
+#include "Hooking/Hooking.h"
 #include "Features.h"
 bool g_unload = false;
 void handleMouseInput() 
@@ -20,6 +20,7 @@ BOOL APIENTRY MainThread(HMODULE pHandle)
         //Attach a console
         if (AttachConsole(GetCurrentProcessId()) == false)
             AllocConsole();
+
         FILE* fStream;
         freopen_s(&fStream,"CONOUT$", "w", stdout);
         SetConsoleTitle(L"ETS2 Menu");
@@ -28,18 +29,25 @@ BOOL APIENTRY MainThread(HMODULE pHandle)
         if (GetD3D11SwapchainDeviceContext(SwapChain, sizeof(SwapChain))) {
             //start hooking by creating a hooking instance
             auto hooking_instance = std::make_unique<Hooking>(SwapChain);
+            // Initalise pointers
             Features::setup();
+
             while (!g_unload) {
                 handleMouseInput();//cant handle mouse input with WndProc for some reason, this is an alternative
                 std::this_thread::sleep_for(10ms);
+
                 if (GetAsyncKeyState(VK_END) & 0x8000)
                     g_unload = true;
+
                 Features::runLoop();
             }
+
             g_hooking->disable();
             hooking_instance.reset();
         }
+
         writeToConsole("Closing handle and exiting...");
+
         if(!FreeConsole())
             writeToConsole("Cant close console!",true);
 

@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../pch.h"
 #include "detour.h"
 #include "MinHook.h"
 
@@ -18,15 +18,6 @@ void detour_hook::start(std::string name, void* target, void* detour)
 		writeToConsole("Hooking " + m_name + " failed! Error - " + MH_StatusToString(status),true);
 	}
 }
-//
-//detour_hook::~detour_hook() noexcept
-//{
-//	/*if (m_target)
-//	{
-//		MH_RemoveHook(m_target);
-//	}
-//	writeToConsole("Removed hook" + m_name);*/
-//}
 
 void detour_hook::enable()
 {
@@ -50,4 +41,3 @@ DWORD exp_handler(PEXCEPTION_POINTERS exp, std::string const& name)
 		? EXCEPTION_EXECUTE_HANDLER
 		: EXCEPTION_CONTINUE_SEARCH;
 }
-
