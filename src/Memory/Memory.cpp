@@ -46,7 +46,7 @@ uintptr_t Memory::FindDMAAddy(uintptr_t ptr, std::vector<unsigned int> offsets)
 	return addr;
 }
 
-std::uint8_t* Memory::sigScan(void* module, const char* signature)
+std::uint8_t* Memory::SigScan(void* module, const char* signature)
 {
     static auto pattern_to_byte = [](const char* pattern) {
         auto bytes = std::vector<int>{};

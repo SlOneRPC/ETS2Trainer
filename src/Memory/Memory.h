@@ -6,5 +6,5 @@ namespace Memory {
 	void Nop(BYTE* dst, unsigned int size);
 	void NopEx(BYTE* dst, unsigned int size, HANDLE hProcess);
 	uintptr_t FindDMAAddy(uintptr_t ptr, std::vector<unsigned int> offsets);
-	std::uint8_t* sigScan(void* module, const char* signature);
+	std::uint8_t* SigScan(void* module, const char* signature);
 }

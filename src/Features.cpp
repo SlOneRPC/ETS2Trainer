@@ -6,8 +6,15 @@
 uintptr_t moduleBase = (uintptr_t)GetModuleHandle(NULL);
 
 Truck* currentTruck = nullptr;
+uintptr_t profileBase;
+
 void Features::setup() {
-	currentTruck = *(Truck**)Memory::FindDMAAddy(moduleBase + 0x01A0E338, { 0x18, 0x80 });
+	std::uint8_t* profileSig = Memory::SigScan(GetModuleHandle(NULL), "48 8b 05 ? ? ? ? 33 ff 4c 8b 40"); // mov  rbx, cs:qword_1A1E348
+
+	ULONG32 profileRelativeOffset = *(ULONG32*)(profileSig + 3); // Offset to the Qword
+	profileBase = (uintptr_t)(profileSig + profileRelativeOffset + 7); // Offset by the number of instructions
+
+	currentTruck = *(Truck**)Memory::FindDMAAddy(profileBase, { 0x18, 0x80 });
 }
 
 
@@ -31,14 +38,14 @@ void Features::runLoop() {
 	}
 
 	if(g_Options.updateMoney){
-		static int* moneyAddress = (int*)Memory::FindDMAAddy(moduleBase + 0x01A0E338, { 0x10, 0x10 });
+		static int* moneyAddress = (int*)Memory::FindDMAAddy(profileBase, { 0x10, 0x10 });
 		if(moneyAddress)
 			*moneyAddress = g_Options.moneyValue;
 		g_Options.updateMoney = false;
 	}
 
 	if (g_Options.updateXP) {
-		static int* xpAddress = (int*)Memory::FindDMAAddy(moduleBase + 0x1A0E338, { 0x195C });
+		static int* xpAddress = (int*)Memory::FindDMAAddy(profileBase, { 0x195C });
 		if(xpAddress)
 			*xpAddress = g_Options.XPValue;
 		g_Options.updateXP = false;
