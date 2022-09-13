@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SDK">
+      <UniqueIdentifier>{071D880B-7326-887C-FCA1-9E7C68AA937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK\Dx11">
+      <UniqueIdentifier>{D427F039-C0F4-4A45-E90D-39EDD53980D3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK\Hooking">
+      <UniqueIdentifier>{2517356D-91CC-AD62-1AC1-A7398675A466}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK\Memory">
+      <UniqueIdentifier>{8F06628A-7BBE-A3D7-E4C5-7C33D09C3EC8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK\Utils">
+      <UniqueIdentifier>{A7872779-13F2-DBEF-5C30-8D95C8D9B944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="deps">
+      <UniqueIdentifier>{F1A1957C-DDD8-960D-86C5-7C1072DB120F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="deps\IMGUI">
+      <UniqueIdentifier>{7B771423-672F-5670-D036-2FCCBC0DF160}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ETS2.h" />
+    <ClInclude Include="Features.h" />
+    <ClInclude Include="Hooking.h" />
+    <ClInclude Include="IDirectInput8Proxy.h" />
+    <ClInclude Include="IDirectInputDevice8Proxy.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="SDK\Dx11\Swapchain.h">
+      <Filter>SDK\Dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\Hooking\Detour.h">
+      <Filter>SDK\Hooking</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\Memory\Memory.h">
+      <Filter>SDK\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\Utils\Utils.h">
+      <Filter>SDK\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="xinput.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\deps\IMGUI\imgui.cpp">
+      <Filter>deps\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\deps\IMGUI\imgui_demo.cpp">
+      <Filter>deps\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\deps\IMGUI\imgui_draw.cpp">
+      <Filter>deps\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\deps\IMGUI\imgui_impl_dx11.cpp">
+      <Filter>deps\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\deps\IMGUI\imgui_impl_win32.cpp">
+      <Filter>deps\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\deps\IMGUI\imgui_widgets.cpp">
+      <Filter>deps\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Features.cpp" />
+    <ClCompile Include="Hooking.cpp" />
+    <ClCompile Include="IDirectInput8Proxy.cpp" />
+    <ClCompile Include="IDirectInputDevice8Proxy.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="SDK\Dx11\Swapchain.cpp">
+      <Filter>SDK\Dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\Hooking\Detour.cpp">
+      <Filter>SDK\Hooking</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\Memory\Memory.cpp">
+      <Filter>SDK\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\Utils\Utils.cpp">
+      <Filter>SDK\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp" />
+  </ItemGroup>
+</Project>
