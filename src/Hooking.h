@@ -16,6 +16,7 @@ struct Hooks {
 	static DWORD WINAPI XInputGetState__Hook(DWORD dwUserIndex, XINPUT_STATE* pState);
 	static HRESULT __stdcall DirectInput8Create__Hook(HINSTANCE hInst, DWORD dwVersion, REFIID riidltf, LPVOID* ppvOut, LPUNKNOWN punkOuter);
 	static int GetCursorInfoHk(PCURSORINFO pci);
+	static WINUSERAPI BOOL WINAPI PeekMessageWHk(_Out_ LPMSG lpMsg,_In_opt_ HWND hWnd,_In_ UINT wMsgFilterMin,_In_ UINT wMsgFilterMax,_In_ UINT wRemoveMsg);
 };
 
 struct minhook_keepalive
@@ -41,6 +42,8 @@ private:
 
 	detour_hook m_xinput;
 	detour_hook m_DirectInput8;
+
+	detour_hook m_peekMessage;
 
 	WNDPROC m_hwndProc;
 	HWND window;

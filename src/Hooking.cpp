@@ -27,6 +27,9 @@ Hooking::Hooking()
     m_DirectInput8.start("DirectInput8Create", GetProcAddress(GetModuleHandleA("dinput8.dll"), "DirectInput8Create"), &Hooks::DirectInput8Create__Hook);
     m_DirectInput8.enable();
 
+    m_peekMessage.start("PeekMessageW", GetProcAddress(GetModuleHandleA("user32.dll"), "PeekMessageW"), &Hooks::PeekMessageWHk);
+    m_peekMessage.enable();
+
     LogInfo("Finished Hooking...");
 }
 
@@ -101,9 +104,15 @@ HRESULT WINAPI Hooks::DirectInput8Create__Hook(HINSTANCE hInst, DWORD dwVersion,
     return hResult;
 }
 
-int Hooks::GetCursorInfoHk(PCURSORINFO pci)
+IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+BOOL __stdcall Hooks::PeekMessageWHk(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
 {
-    return 0;
+    if (g_ShowMenu && lpMsg->message == WM_INPUT)
+    {
+        return 0;
+    }
+
+    return g_hooking->m_peekMessage.get_original<decltype(&Hooks::PeekMessageWHk)>()(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
 }
 
 HRESULT Hooks::swapchain_resizebuffers(IDXGISwapChain* this_, UINT buffer_count, UINT width, UINT height, DXGI_FORMAT new_format, UINT swapchain_flags)
@@ -121,7 +130,6 @@ HRESULT Hooks::swapchain_resizebuffers(IDXGISwapChain* this_, UINT buffer_count,
     return result;
 }
 
-IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK Hooks::hWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (uMsg == WM_KEYUP && wParam == VK_INSERT)
@@ -153,6 +161,7 @@ void Hooking::disable() {
     m_set_cursor_pos_hook.disable();
     m_xinput.disable();
     m_DirectInput8.disable();
+    m_peekMessage.disable();
 
     if (g_hooking->window)
         SetWindowLongPtrW(g_hooking->window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(m_hwndProc));
