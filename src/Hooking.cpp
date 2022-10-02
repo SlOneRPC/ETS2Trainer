@@ -13,23 +13,24 @@ Hooking::Hooking()
 
     LogInfo("Starting Hooking...");
     void* SwapChain[18];
-    assert(GetD3D11SwapchainDeviceContext(SwapChain, sizeof(SwapChain), L"prism3d"));
-    m_swapchain_hook.start("Present", SwapChain[8], &Hooks::swapchain_present);
-    m_swapchain_hook.enable();
-    m_resizeBuffers_hook.start("ResizeBuffer", SwapChain[13], &Hooks::swapchain_resizebuffers);
-    m_resizeBuffers_hook.enable();
+    if (GetD3D11SwapchainDeviceContext(SwapChain, sizeof(SwapChain), L"prism3d")) 
+    {
+        m_swapchain_hook.start("Present", SwapChain[8], &Hooks::swapchain_present);
+        m_swapchain_hook.enable();
+        m_resizeBuffers_hook.start("ResizeBuffer", SwapChain[13], &Hooks::swapchain_resizebuffers);
+        m_resizeBuffers_hook.enable();
 
-    // Extra hooks
-    m_set_cursor_pos_hook.start("SetCusorPosition", GetProcAddress(GetModuleHandleA("user32.dll"), "SetCursorPos"), &Hooks::set_cursor_pos);
-    m_set_cursor_pos_hook.enable();
-    m_xinput.start("XInputGetState", GetProcAddress(GetModuleHandleA("xinput1_3.dll"), "XInputGetState"), &Hooks::XInputGetState__Hook);
-    m_xinput.enable();
-    m_DirectInput8.start("DirectInput8Create", GetProcAddress(GetModuleHandleA("dinput8.dll"), "DirectInput8Create"), &Hooks::DirectInput8Create__Hook);
-    m_DirectInput8.enable();
+        // Extra hooks
+        m_set_cursor_pos_hook.start("SetCusorPosition", GetProcAddress(GetModuleHandleA("user32.dll"), "SetCursorPos"), &Hooks::set_cursor_pos);
+        m_set_cursor_pos_hook.enable();
+        m_xinput.start("XInputGetState", GetProcAddress(GetModuleHandleA("xinput1_3.dll"), "XInputGetState"), &Hooks::XInputGetState__Hook);
+        m_xinput.enable();
+        m_DirectInput8.start("DirectInput8Create", GetProcAddress(GetModuleHandleA("dinput8.dll"), "DirectInput8Create"), &Hooks::DirectInput8Create__Hook);
+        m_DirectInput8.enable();
 
-    m_peekMessage.start("PeekMessageW", GetProcAddress(GetModuleHandleA("user32.dll"), "PeekMessageW"), &Hooks::PeekMessageWHk);
-    m_peekMessage.enable();
-
+        m_peekMessage.start("PeekMessageW", GetProcAddress(GetModuleHandleA("user32.dll"), "PeekMessageW"), &Hooks::PeekMessageWHk);
+        m_peekMessage.enable();
+    }
     LogInfo("Finished Hooking...");
 }
 
