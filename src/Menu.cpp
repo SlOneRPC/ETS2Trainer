@@ -39,6 +39,13 @@ void Menu::OnRender()
 				g_Features->SetXP(g_Options.XPValue);
 			}
 		}
+
+		{
+			if (ImGui::Button("Teleport To Camera")) 
+			{
+				g_Features->TeleportToCameraCoords();
+			}
+		}
 	}
 	ImGui::End();
 }

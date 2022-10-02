@@ -10,3 +10,4 @@ imgui menu dx11 based Euro Truck Simulator 2 trainer
 - Repair
 - Refuel
 - Disable Damage
+- Teleport To Camera

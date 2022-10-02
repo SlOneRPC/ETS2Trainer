@@ -2,6 +2,8 @@
 #include "pch.h"
 #include "ETS2.h"
 
+class Vector3 { float x, y, z; };
+
 class Features {
 public:
 	Features();
@@ -13,6 +15,8 @@ public:
 	int64_t& GetMoney();
 	int64_t& GetXp();
 	void DisableDamage(bool enable);
+	void TeleportToCameraCoords();
+	void TeleportToCoords(Vector3& coords);
 
 private:
 	Truck* currentTruck = nullptr;

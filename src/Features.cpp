@@ -63,3 +63,19 @@ void Features::DisableDamage(bool enable)
 		Memory::Patch(displayDamageFuncAddress, (BYTE*)"\xE8\xB0\x23\xB9\xFF", 5);
 	}
 }
+
+void Features::TeleportToCameraCoords()
+{
+	Vector3* cameraCoords = (Vector3*)Memory::FindDMAAddy((uintptr_t)moduleBase + 0x1B3D760, { 0x38, 0x0, 0x40 });
+	TeleportToCoords(*cameraCoords);
+}
+
+void Features::TeleportToCoords(Vector3& coords)
+{
+	__int64* teleportObj = (__int64*)(Memory::FindDMAAddy((uintptr_t)moduleBase + 0x1B3D728, { 0x10D0 }));
+	typedef char(__fastcall* teleport_t) (__int64 teleportPtr, Vector3* cameraCoords, int64_t teleportFlag, int64_t extraCalculations);
+
+	teleport_t TeleportTruck = (teleport_t)((uintptr_t)moduleBase + 0x32DF10);
+
+	TeleportTruck(*teleportObj, &coords, 0, 0);
+}
