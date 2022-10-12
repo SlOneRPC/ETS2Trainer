@@ -2,7 +2,7 @@
 #include "pch.h"
 #include "ETS2.h"
 
-class Vector3 { float x, y, z; };
+struct Vector3 { float x, y, z; };
 
 class Features {
 public:
@@ -17,6 +17,7 @@ public:
 	void DisableDamage(bool enable);
 	void TeleportToCameraCoords();
 	void TeleportToCoords(Vector3& coords);
+	void BunnyHop();
 
 private:
 	Truck* currentTruck = nullptr;
