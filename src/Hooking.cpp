@@ -1,11 +1,11 @@
 #include "Hooking.h"
 #include "SDK/Dx11/Swapchain.h"
 #include "IDirectInput8Proxy.h"
+#include "Features.h"
 
 static IDXGISwapChain* pSwapChain = NULL;
 ID3D11Device* pDevice = NULL;
 ID3D11DeviceContext* pContext = NULL;
-
 
 Hooking::Hooking()
 {
@@ -133,9 +133,12 @@ HRESULT Hooks::swapchain_resizebuffers(IDXGISwapChain* this_, UINT buffer_count,
 
 LRESULT CALLBACK Hooks::hWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    if (uMsg == WM_KEYUP && wParam == VK_INSERT)
+    if (uMsg == WM_KEYUP)
     {
-        g_ShowMenu = !g_ShowMenu;
+        if (wParam == VK_INSERT)
+            g_ShowMenu = !g_ShowMenu;
+        else if (wParam == VK_F9 && g_Options.teleportHotkey)
+            g_Features->TeleportToCameraCoords();
     }
 
     if (g_ShowMenu)
