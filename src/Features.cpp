@@ -7,16 +7,40 @@ static constexpr auto relativeToAbsolute(uintptr_t address, int addressOffset, i
 	return (T)(address + instructionCount + *reinterpret_cast<std::int32_t*>(address + addressOffset));
 }
 
+static std::uint8_t* teleportFuncAddress = nullptr;
+static std::uint8_t* damageFuncAddress = nullptr;
+static std::uint8_t* displayDamageFuncAddress = nullptr;
+
+static Vector3* cameraCoords = nullptr;
+static Vector3* truckCoords = nullptr;
+static int64_t* teleportObj = nullptr;
+
 Features::Features()
 {
 	g_Features = this;
 	moduleBase = GetModuleHandle(NULL);
 	
-	profileBase = relativeToAbsolute<uintptr_t>((uintptr_t)Memory::SigScan(moduleBase, "48 8b 05 ? ? ? ? 48 8b d9 8b 90 ? ? ? ? 48 8b 80 ? ? ? ? 48 8b 88 ? ? ? ? e8 ? ? ? ? 48 8b 4b ? 3b 81 ? ? ? ? 0f 92 c0"), 3, 7);
+	profileBase = relativeToAbsolute<uintptr_t>(
+		(uintptr_t)Memory::SigScan(moduleBase, "48 8b 05 ? ? ? ? 48 8b d9 8b 90 ? ? ? ? 48 8b 80 ? ? ? ? 48 8b 88 ? ? ? ? e8 ? ? ? ? 48 8b 4b ? 3b 81 ? ? ? ? 0f 92 c0"), 3, 7);
 
 	currentTruck = *(Truck**)Memory::FindDMAAddy(profileBase, { 0x18, 0x80 });
 	moneyAddress = (int64_t*)Memory::FindDMAAddy(profileBase, { 0x10, 0x10 });
 	xpAddress = (int64_t*)Memory::FindDMAAddy(profileBase, { 0x195C });
+
+	cameraCoords = (Vector3*)Memory::FindDMAAddy(relativeToAbsolute<uintptr_t>(
+		(uintptr_t)Memory::SigScan(moduleBase, "48 8b 05 ? ? ? ? 33 ff 4d 8b f8"), 3, 7), 
+		{ 0x38, 0x0, 0x40 });
+	
+	//truckCoords = (Vector3*)Memory::FindDMAAddy((uintptr_t)moduleBase + 0x1B0BF00, { 0x0, 0x68, 0x140, 0x0, 0x14 });
+
+	auto teleportOffset = *(int32_t*)(Memory::SigScan(moduleBase, "48 8b 89 ? ? ? ? e8 ? ? ? ? 48 8b 5c 24 ? 48 8b 74 24 ? 48 83 c4 ? 5f c3 cc cc cc cc cc cc cc cc cc cc 40 55") + 3);
+	teleportObj = (int64_t*)(Memory::FindDMAAddy(relativeToAbsolute<uintptr_t>(
+		(uintptr_t)Memory::SigScan(moduleBase, "48 8b 05 ? ? ? ? f3 44 0f 10 25"), 3, 7), 
+		{ (unsigned int)teleportOffset }));
+
+	teleportFuncAddress = Memory::SigScan(moduleBase, "48 81 ec ? ? ? ? 48 83 79 ? ? 41 0f b6 d9") - 20;
+	damageFuncAddress = Memory::SigScan(moduleBase, "0f 28 cf ? ? ? ? ? 41 c7 84 24") + 3;
+	displayDamageFuncAddress = Memory::SigScan(moduleBase, "? ? ? ? ? f3 0f 10 15 ? ? ? ? 48 8d 54 24 ? 48 8b 4b");
 }
 
 void Features::Repair()
@@ -54,8 +78,6 @@ int64_t& Features::GetXp()
 
 void Features::DisableDamage(bool enable)
 {
-	static auto damageFuncAddress = Memory::SigScan(moduleBase, "0f 28 cf ? ? ? ? ? 41 c7 84 24") + 3;
-	static auto displayDamageFuncAddress = Memory::SigScan(moduleBase, "? ? ? ? ? f3 0f 10 15 ? ? ? ? 48 8d 54 24 ? 48 8b 4b");
 	if (enable) 
 	{
 		Memory::Nop(damageFuncAddress, 5);
@@ -70,28 +92,13 @@ void Features::DisableDamage(bool enable)
 
 void Features::TeleportToCameraCoords()
 {
-	Vector3* cameraCoords = (Vector3*)Memory::FindDMAAddy((uintptr_t)moduleBase + 0x1B3D760, { 0x38, 0x0, 0x40 });
 	TeleportToCoords(*cameraCoords);
 }
 
 void Features::TeleportToCoords(Vector3& coords)
 {
-	static auto teleportFuncAddress = Memory::SigScan(moduleBase, "48 81 ec ? ? ? ? 48 83 79 ? ? 41 0f b6 d9") - 20;
-	Memory::Patch(teleportFuncAddress, (BYTE*)"\x44\x88\x4C\x24\x20\x55\x53\x56\x41\x54\x41\x56\x48\x8D\xAC\x24\x00\xFE\xFF\xFF", 20);
-
-	__int64* teleportObj = (__int64*)(Memory::FindDMAAddy((uintptr_t)moduleBase + 0x1B3D728, { 0x10D0 }));
-	typedef char(__fastcall* teleport_t) (__int64 teleportPtr, Vector3* cameraCoords, int64_t teleportFlag, int64_t extraCalculations);
-
-	teleport_t TeleportTruck = (teleport_t)((uintptr_t)moduleBase + 0x32DF10);
+	typedef char(__fastcall* teleport_t) (int64_t teleportPtr, Vector3* cameraCoords, int64_t teleportFlag, int64_t extraCalculations);
+	teleport_t TeleportTruck = (teleport_t)(teleportFuncAddress);
 
 	TeleportTruck(*teleportObj, &coords, 0, 0);
-}
-
-void Features::BunnyHop()
-{
-	Vector3* truckCoords = (Vector3*)Memory::FindDMAAddy((uintptr_t)moduleBase + 0x1B0BF00, { 0x0, 0x68, 0x140, 0x0, 0x14 });
-	//Vector3* truckRotation = (Vector3*)Memory::FindDMAAddy((uintptr_t)moduleBase + 0x1B0BF00, { 0, 68, 140, 0, 24 });
-	
-	Vector3 newCoords = Vector3(truckCoords->x, truckCoords->y + 50, truckCoords->z);
-	*truckCoords = newCoords;
 }

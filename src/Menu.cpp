@@ -45,6 +45,9 @@ void Menu::OnRender()
 			{
 				g_Features->TeleportToCameraCoords();
 			}
+
+
+			ImGui::Checkbox("F9 Teleport", g_Options.teleportHotkey);
 		}
 	}
 	ImGui::End();

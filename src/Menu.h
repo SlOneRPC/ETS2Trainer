@@ -36,6 +36,7 @@ public:
 	OPTION(bool, disableDamage, false);
 	OPTION(int, moneyValue, 100000);
 	OPTION(int, XPValue, 100000);
+	OPTION(bool, teleportHotkey, false);
 };
 
 

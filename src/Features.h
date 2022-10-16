@@ -17,7 +17,6 @@ public:
 	void DisableDamage(bool enable);
 	void TeleportToCameraCoords();
 	void TeleportToCoords(Vector3& coords);
-	void BunnyHop();
 
 private:
 	Truck* currentTruck = nullptr;
